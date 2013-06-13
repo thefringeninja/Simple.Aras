@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="casting_to_a_type_should.cs" />
+    <Compile Include="opening_a_named_connection_should.cs" />
     <Compile Include="invoking_a_method_that_returns_raw_xml_should.cs" />
     <Compile Include="invoking_a_method_that_returns_a_fault_should.cs" />
     <Compile Include="invoking_a_method_should.cs" />
