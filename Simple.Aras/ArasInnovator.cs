@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Security.Authentication;
 using Aras.IOM;
 
 namespace Simple.Aras
@@ -13,20 +14,20 @@ namespace Simple.Aras
             return new ArasInnovatorAdaptor(IomFactory.CreateInnovator(connection));
         }
 
-        public static dynamic OpenNamedConnection(string connectionStringName)
+        public static dynamic OpenNamedConnection(string connectionStringName, bool loginImmediately = false)
         {
             var connectionString = ConfigurationManager.ConnectionStrings[connectionStringName];
             if (connectionString == null) throw new ArgumentOutOfRangeException("connectionStringName");
 
-            return OpenConnection(connectionString.ConnectionString);
+            return OpenConnection(connectionString.ConnectionString, loginImmediately);
         }
 
-        public static dynamic OpenConnection(string connection)
+        public static dynamic OpenConnection(string connection, bool loginImmediately = false)
         {
-            return OpenConnection(new Uri(connection));
+            return OpenConnection(new Uri(connection), loginImmediately);
         }
 
-        public static dynamic OpenConnection(Uri connection)
+        public static dynamic OpenConnection(Uri connection, bool loginImmediately = false)
         {
             if (connection == null) throw new ArgumentNullException("connection");
 
@@ -42,7 +43,21 @@ namespace Simple.Aras
             builder.UserName = builder.Password = String.Empty;
             
             var httpServerConnection = IomFactory.CreateHttpServerConnection(builder.Uri.ToString(), database, userName, password);
+            if (loginImmediately)
+            {
+                LoginImmediately(httpServerConnection);
+            }
             return new ArasInnovatorAdaptor(new Innovator(httpServerConnection));
+        }
+
+        private static void LoginImmediately(HttpServerConnection serverConnection)
+        {
+            var loginResult = serverConnection.Login();
+
+            if (loginResult.isError())
+            {
+                throw new AuthenticationException(loginResult.getErrorString());
+            }
         }
     }
 }
