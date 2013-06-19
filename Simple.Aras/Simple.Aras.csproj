@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="ArasInnovator.cs" />
     <Compile Include="ArasInnovatorAdaptor.cs" />
+    <Compile Include="BuildArasInnovatorConnection.cs" />
     <Compile Include="ArasInnovatorItemAdaptor.cs" />
     <Compile Include="ArasInnovatorMethodAdaptor.cs" />
     <Compile Include="ArasItem.cs" />
