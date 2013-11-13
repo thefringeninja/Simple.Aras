@@ -17,7 +17,7 @@ namespace Simple.Aras.Tests
 
         protected override dynamic Given()
         {
-            return ArasInnovator.Open(BuildArasInnovatorConnection.FromUri(new Uri("http://user:password@localhost/InnovatorServer;database=development")));
+            return ArasInnovator.Open(new ArasHttpServerConnection(new Uri("http://user:password@localhost/InnovatorServer;database=development")));
         }
 
         [Test]

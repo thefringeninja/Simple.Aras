@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-using Aras.IOM;
-using Moq;
+﻿using System.Net.Http;
 using NUnit.Framework;
 using Should.Fluent;
 
@@ -10,16 +8,9 @@ namespace Simple.Aras.Tests
     public class opening_a_connection_should : ActionSpecification<dynamic>
 // ReSharper restore InconsistentNaming
     {
-        private IServerConnection connectionMock;
-
-        protected override void Setup()
-        {
-            connectionMock = Mock.Of<IServerConnection>();
-        }
-
         protected override dynamic Given()
         {
-            return ArasInnovator.Open(connectionMock);
+            return ArasInnovator.Open(new ArasHttpServerConnection(new HttpClient()));
         }
 
         [Test]

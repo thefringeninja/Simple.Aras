@@ -1,34 +1,34 @@
 ﻿using System;
 using System.Dynamic;
-using Aras.IOM;
+using System.Xml.Linq;
+
 
 namespace Simple.Aras
 {
     public class ArasInnovatorMethodAdaptor : DynamicObject
     {
-        private readonly Innovator innovator;
+        private readonly IArasHttpServerConnection innovator;
 
-        public ArasInnovatorMethodAdaptor(Innovator innovator)
+        public ArasInnovatorMethodAdaptor(IArasHttpServerConnection innovator)
         {
             this.innovator = innovator;
         }
         
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
-            string body = String.Empty;
+            var item = new XElement(
+                "Item", 
+                new XAttribute("type", "Method"), 
+                new XAttribute("action", binder.Name));
+
             var argumentNames = binder.CallInfo.ArgumentNames;
-            
+
             for (int i = 0; i < argumentNames.Count; i++)
             {
-                body += String.Format("<{0}>{1}</{0}>", argumentNames[i], InnnovateValue(args[i]));
-            }
-            var resultOfApplication = innovator.applyMethod(binder.Name, body);
-            if (resultOfApplication.isError())
-            {
-                throw new InvalidOperationException(resultOfApplication.getErrorString());
+                item.Add(new XElement(argumentNames[i], InnnovateValue(args[i])));
             }
 
-            result = new ArasInnovatorItemAdaptor(resultOfApplication);
+            result = new ArasInnovatorItemAdaptor(innovator.ApplyAmlAsync(item));
 
             return true;
         }

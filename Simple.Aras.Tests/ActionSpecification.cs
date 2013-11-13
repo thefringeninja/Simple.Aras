@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Simple.Aras.Tests
 {
@@ -10,18 +11,18 @@ namespace Simple.Aras.Tests
     public abstract class ActionSpecification<TSut, TRet> : Specification<TSut>
     {
         protected TRet Result;
-        protected override void RunSpecification()
+        protected override async Task RunSpecification()
         {
             Sut = Given();
 
-            Result = When()(Sut);
+            Result = await When()(Sut);
         }
 
         protected abstract TSut Given();
 
-        protected virtual Func<TSut, TRet> When()
+        protected virtual Func<TSut, Task<TRet>> When()
         {
-            return sut => default(TRet);
+            return sut => Task.FromResult(default(TRet));
         }
     }
 }

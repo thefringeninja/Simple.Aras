@@ -1,12 +1,10 @@
-﻿using Aras.IOM;
-
-namespace Simple.Aras
+﻿namespace Simple.Aras
 {
     public static class ArasInnovator
     {
-        public static dynamic Open(IServerConnection connection)
+        public static dynamic Open(IArasHttpServerConnection connection)
         {
-            return new ArasInnovatorAdaptor(IomFactory.CreateInnovator(connection));
+            return new ArasInnovatorAdaptor(connection);
         }
     }
 }

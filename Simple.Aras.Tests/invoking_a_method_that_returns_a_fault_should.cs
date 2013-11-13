@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Xml;
-using Aras.IOM;
-using Moq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Simple.Aras.Tests
@@ -9,8 +9,6 @@ namespace Simple.Aras.Tests
     public class invoking_a_method_that_returns_a_fault_should 
         : ActionSpecification<ArasInnovatorMethodAdaptor>
     {
-        private IServerConnection serverConnection;
-        private Mock<IServerConnection> serverConnectionMock;
         private readonly Guid aGuid = Guid.NewGuid();
         private const string fault = @"
 <SOAP-ENV:Envelope xmlns:SOAP-ENV=""http://schemas.xmlsoap.org/soap/envelope/"">
@@ -26,38 +24,34 @@ namespace Simple.Aras.Tests
   </SOAP-ENV:Body>
 </SOAP-ENV:Envelope>
 ";
-        protected override void Setup()
-        {
-            serverConnection = Mock.Of<IServerConnection>();
-            serverConnectionMock = Mock.Get(serverConnection);
-            serverConnectionMock.Setup(connection =>
-                                       connection.CallAction(
-                                           It.IsAny<String>(),
-                                           It.IsAny<XmlDocument>(),
-                                           It.IsAny<XmlDocument>()))
-                                .Callback<String, XmlDocument, XmlDocument>((actionName, inDOM, outDOM) => outDOM.LoadXml(fault));
-        }
 
         protected override ArasInnovatorMethodAdaptor Given()
         {
-            return new ArasInnovatorMethodAdaptor(new Innovator(serverConnection));
+            return new ArasInnovatorMethodAdaptor(new ArasHttpServerConnection(new HttpClient(new FakeHandler(new HttpResponseMessage(HttpStatusCode.InternalServerError)
+            {
+                Content = new StringContent(fault),
+                
+            },
+                _ => { }))
+            {
+                BaseAddress = new Uri("http://fake")
+            }));
         }
-
-        protected override Func<ArasInnovatorMethodAdaptor, Unit> When()
+        protected override Func<ArasInnovatorMethodAdaptor, Task<Unit>> When()
         {
-            return sut => ((dynamic) sut).Call_some_method(aGuid: aGuid, aString: "Cool Story Bro");
+            return async sut => await ((dynamic) sut).Call_some_method(aGuid: aGuid, aString: "Cool Story Bro");
         }
 
         [Test]
         public void throws_invalid_operation_exception()
         {
-            Assert.IsInstanceOf<InvalidOperationException>(ThrownException);
+            Assert.IsInstanceOf<InvalidOperationException>(ThrownException.GetBaseException());
         }
 
         [Test]
         public void exception_indicates_what_went_wrong()
         {
-            Assert.AreEqual("Something went horribly wrong.", ThrownException.Message);
+            Assert.AreEqual("Something went horribly wrong.", ThrownException.GetBaseException().Message);
         }
 
     }

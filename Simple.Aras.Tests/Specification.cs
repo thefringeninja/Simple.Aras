@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Simple.Aras.Tests
@@ -17,7 +18,7 @@ namespace Simple.Aras.Tests
 
             try
             {
-                RunSpecification();
+               RunSpecification().Wait(TimeSpan.FromSeconds(5));
             }
             catch (Exception ex)
             {
@@ -31,6 +32,6 @@ namespace Simple.Aras.Tests
             
         }
 
-        protected abstract void RunSpecification();
+        protected abstract Task RunSpecification();
     }
 }

@@ -1,12 +1,10 @@
-﻿using Aras.IOM;
-
-namespace Simple.Aras
+﻿namespace Simple.Aras
 {
     public class ArasInnovatorAdaptor
     {
-        private readonly Innovator innovator;
+        private readonly IArasHttpServerConnection innovator;
 
-        public ArasInnovatorAdaptor(Innovator innovator)
+        public ArasInnovatorAdaptor(IArasHttpServerConnection innovator)
         {
             this.innovator = innovator;
         }

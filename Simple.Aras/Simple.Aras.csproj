@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Simple.Aras</RootNamespace>
     <AssemblyName>Simple.Aras</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,25 +30,24 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IOM">
-      <HintPath>..\lib\IOM.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArasInnovator.cs" />
     <Compile Include="ArasInnovatorAdaptor.cs" />
-    <Compile Include="BuildArasInnovatorConnection.cs" />
+    <Compile Include="IArasHttpServerConnection.cs" />
     <Compile Include="ArasInnovatorItemAdaptor.cs" />
     <Compile Include="ArasInnovatorMethodAdaptor.cs" />
-    <Compile Include="ArasItem.cs" />
+    <Compile Include="ArasHttpServerConnection.cs" />
     <Compile Include="Inflector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
