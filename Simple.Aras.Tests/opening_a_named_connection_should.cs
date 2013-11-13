@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Xml.Linq;
-using Aras.IOM;
-using Moq;
 using NUnit.Framework;
 using Should.Fluent;
 
