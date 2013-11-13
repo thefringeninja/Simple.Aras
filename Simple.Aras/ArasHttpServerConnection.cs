@@ -85,16 +85,21 @@ namespace Simple.Aras
 
                 var responseDocument = XDocument.Parse(responseText);
 
-                var fault = responseDocument.Descendants(SoapNs + "Fault").FirstOrDefault();
-                if (fault != null)
-                {
-                    var faultCode = (from f in fault.Descendants("faultstring")
-                                     select f.Value).FirstOrDefault();
-
-                    throw new InvalidOperationException(faultCode ?? "Unknown error.");
-                }
+                ThrowExceptionIfFaulted(responseDocument);
 
                 return responseDocument.Descendants("Result").FirstOrDefault();
+            }
+        }
+
+        private static void ThrowExceptionIfFaulted(XDocument responseDocument)
+        {
+            var fault = responseDocument.Descendants(SoapNs + "Fault").FirstOrDefault();
+            if (fault != null)
+            {
+                var faultCode = (from f in fault.Descendants("faultstring")
+                                 select f.Value).FirstOrDefault();
+
+                throw new InvalidOperationException(faultCode ?? "Unknown error.");
             }
         }
 
